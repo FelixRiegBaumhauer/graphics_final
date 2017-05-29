@@ -8,7 +8,190 @@
 #include "math.h"
 #include "gmath.h"
 
-void scanline_convert( struct matrix *points, int i, screen s, zbuffer zb ) {
+void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb, color c, int count) {
+
+  
+  //THIS IS WHERE MY WORK STARTS FROM
+      
+  //find B, T, M
+  int bx, tx, mx;
+  int by, ty, my;
+  int bz, tz, mz;
+  
+  if(polygons->m[1][point] < polygons->m[1][point+1]){
+    if(polygons->m[1][point] < polygons->m[1][point+2]){
+      //point is at bottom
+      by = polygons->m[1][point];
+      bx = polygons->m[0][point];
+      bz = polygons->m[2][point];
+      
+      //which of +1 , +2 is at Mid, Top
+      if(polygons->m[1][point+1] < polygons->m[1][point+2]){
+	my = polygons->m[1][point+1];
+	mx = polygons->m[0][point+1];
+	mz = polygons->m[2][point+1];
+	
+	ty = polygons->m[1][point+2];
+	tx = polygons->m[0][point+2];
+	tz = polygons->m[2][point+2];
+      }
+      else{
+	ty = polygons->m[1][point+1];
+	tx = polygons->m[0][point+1];
+	tz = polygons->m[2][point+1];
+	
+	my = polygons->m[1][point+2];
+	mx = polygons->m[0][point+2];
+	mz = polygons->m[2][point+2];
+      }
+    }
+    //if point is below +1, but not bellow +2
+    else{
+      by = polygons->m[1][point+2];
+      bx = polygons->m[0][point+2];
+      bz = polygons->m[2][point+2];
+      
+      my = polygons->m[1][point];
+      mx = polygons->m[0][point];
+      mz = polygons->m[2][point];
+      
+      ty = polygons->m[1][point+1];
+      tx = polygons->m[0][point+1];
+      tz = polygons->m[2][point+1];
+    }
+  }
+  //if point is not below 2
+  else{
+    if(polygons->m[1][point] < polygons->m[1][point+2]){
+      by = polygons->m[1][point+1];
+      bx = polygons->m[0][point+1];
+      bz = polygons->m[2][point+1];
+
+      my = polygons->m[1][point];
+      mx = polygons->m[0][point];
+      mz = polygons->m[2][point];
+
+      ty = polygons->m[1][point+2];
+      tx = polygons->m[0][point+2];
+      tz = polygons->m[2][point+2];
+    }
+    else{
+      ty = polygons->m[1][point];
+      tx = polygons->m[0][point];
+      tz = polygons->m[2][point];
+      
+      if(polygons->m[1][point+1] < polygons->m[1][point+2]){
+	my = polygons->m[1][point+2];
+	mx = polygons->m[0][point+2];
+	mz = polygons->m[2][point+2];
+
+	by = polygons->m[1][point+1];
+	bx = polygons->m[0][point+1];
+	bz = polygons->m[2][point+1];
+      }
+      else{
+	by = polygons->m[1][point+2];
+	bx = polygons->m[0][point+2];
+	bz = polygons->m[2][point+2];
+
+	my = polygons->m[1][point+1];
+	mx = polygons->m[0][point+1];
+	mz = polygons->m[2][point+1];
+      }
+    }
+  }
+  
+  printf("\nTHE POINTS: \ntop: (%d, %d), mid: (%d, %d), bot: (%d, %d)\n",
+	 tx,ty,mx,my,bx,by);
+  
+  double x0_inc;
+  double x1_inc;//this is the first branch of x1
+  double x2_inc;// 2nd branch of x0
+
+  double mz0;
+  double mz1;
+  double mz2;
+
+  int modemz0, modemz1, modemz2;
+  
+  //x0
+  if (ty-by == 0){
+    x0_inc = 0;
+  }
+  else{
+    x0_inc = ((float)(tx-bx))/((float)(ty-by));
+  }
+  
+  //x1
+  if (my-by == 0){
+    x1_inc = mx-bx;
+  }
+  else{
+    x1_inc = ((float)(mx-bx))/((float)(my-by));
+  }
+  
+  //x2
+  if (ty-my == 0){
+    x2_inc = 0;
+  }
+  else{
+    x2_inc = ((float)(tx-mx))/((float)(ty-my));
+  }
+  
+  //printf("inc0: %f, inc1: %f, inc2: %f\n", x0_inc, x1_inc, x2_inc);
+  
+  double x_pos0 = bx;
+  double x_pos1 = bx;
+  
+  int y_inc = 1;
+  int y_pos = by;
+  
+      
+  for(y_pos=by; y_pos <= ty; y_pos+=y_inc){
+    /*
+      if(y_pos == my+1){
+      x1_inc = x2_inc;
+      printf("THE xinc's were switched \n");
+      printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
+      //set x1 to x2
+      }*/
+    
+    if(my != by){
+      if(y_pos == my){
+	x1_inc = x2_inc;
+	printf("THE xinc's were switched \n");
+	printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
+	//set x1 to x2
+      }
+      
+      draw_line( x_pos0, y_pos, 0, x_pos1, y_pos, 0, s, zb, c);
+      //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
+      
+      //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
+      x_pos0 += x0_inc;
+      x_pos1 += x1_inc;
+    }
+    else{
+      //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
+      x_pos0 += x0_inc;
+      x_pos1 += x1_inc;
+      
+      draw_line( x_pos0, y_pos, 0, x_pos1, y_pos, 0, s, zb, c);
+      //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
+      
+      if(y_pos == my){
+	x1_inc = x2_inc;
+	printf("THE xinc's were switched \n");
+	printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
+	//set x1 to x2
+      }
+    }
+    
+    
+    
+  }
+
+  
 }
 
 
@@ -56,18 +239,31 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
  
   int point;
   double *normal;
+
+  int count = 0;
   
   for (point=0; point < polygons->lastcol-2; point+=3) {
 
     normal = calculate_normal(polygons, point);
     
     if ( normal[2] > 0 ) {
+
+      c.red = ((MAX_COLOR * (point*53)) % 256);
+      c.green = ((MAX_COLOR * (point*43)) % 256);
+      c.blue = ((MAX_COLOR * (point*23)) % 256);
       
       //printf("polygon %d\n", point);
-      /* scanline_convert( polygons, point, s, zb ); */
-      /* c.red = 0; */
-      /* c.green = 255; */
-      /* c.blue = 0; */
+      scanline_convert( polygons, point, s, zb, c, count); 
+
+      count++;
+      
+      c.red = 0; 
+      c.green = 0; 
+      c.blue = 0; 
+
+
+      //THESE DRAW LINES ARE TO BE REPLACED
+      
       draw_line( polygons->m[0][point],
       		 polygons->m[1][point],
       		 polygons->m[2][point],
@@ -89,6 +285,7 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
       		 polygons->m[1][point+2],
       		 polygons->m[2][point+2],
       		 s, zb, c);
+      
        }
   }
 }
@@ -530,6 +727,31 @@ void draw_line(int x0, int y0, double z0,
     z1 = z;
   }
 
+  //printf("LINE INFO: x0: %d, x1: %d \n", x0, x1);
+  
+  /*
+  //setting m to a vaue;
+  float m;
+  //mode is 0 if we use m as y, and 1 if we use m as x, and 2 if we have a line that only chnages in z
+  int mode = 0;
+
+  if((y1-y0) == 0){
+    if((x1-x0) == 0){
+      mode = 2;
+      //means just take who ever is higher
+    }
+    else{
+      mode = 1;
+      m = ((float)(z1-z0))/((float)(x1-x0));
+    }
+  }
+  else{
+    m = ((float)(z1-z0))/((float)(y1-y0));
+  }
+  //
+  */
+
+
   x = x0;
   y = y0;
   z = z0;
@@ -584,6 +806,9 @@ void draw_line(int x0, int y0, double z0,
   while ( loop_start < loop_end ) {
     
     plot( s, zb, c, x, y, z );
+
+    //printf("STEP OCCURED, y: %d \n", y);
+
     if ( (wide && ((A > 0 && d > 0) ||
 		   (A < 0 && d < 0)))
 	 ||
@@ -598,6 +823,29 @@ void draw_line(int x0, int y0, double z0,
       y+= dy_east;
       d+= d_east;
     }
+
+
+    /*
+    //altering z
+    if(mode == 0){
+      z = z0 + m*(y-y0);
+      printf("z: %f, z0: %f, z1: %f", z, z0, z1);
+    }
+    if(mode == 1){
+      z = z0 + m*(x-x0);
+    }
+    if(mode == 2){
+      if(z0>z1){
+	z=z0;
+      }
+      else{
+	z=z1;
+      }
+    }
+    //
+    */
+
+    
     loop_start++;
   } //end drawing loop
   plot( s, zb, c, x1, y1, z );

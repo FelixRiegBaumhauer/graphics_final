@@ -145,7 +145,9 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   
   int y_inc = 1;
   int y_pos = by;
-  
+
+  float some_pos;
+  some_pos = ((mx+bx+tx)/3) - ((my+by+ty)/3);
       
   for(y_pos=by; y_pos <= ty; y_pos+=y_inc){
     /*
@@ -164,7 +166,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
 	//set x1 to x2
       }
       
-      draw_line( x_pos0, y_pos, 0, x_pos1, y_pos, 0, s, zb, c);
+      draw_line( x_pos0, y_pos, some_pos, x_pos1, y_pos, some_pos, s, zb, c);
       //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
       
       //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
@@ -176,7 +178,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
       x_pos0 += x0_inc;
       x_pos1 += x1_inc;
       
-      draw_line( x_pos0, y_pos, 0, x_pos1, y_pos, 0, s, zb, c);
+      draw_line( x_pos0, y_pos, some_pos, x_pos1, y_pos, some_pos, s, zb, c);
       //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
       
       if(y_pos == my){

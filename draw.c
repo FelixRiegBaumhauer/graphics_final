@@ -8,7 +8,7 @@
 #include "math.h"
 #include "gmath.h"
 
-void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb, color c, int count) {
+void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb, color c) {
 
   
   //THIS IS WHERE MY WORK STARTS FROM
@@ -159,8 +159,8 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
     if(my != by){
       if(y_pos == my){
 	x1_inc = x2_inc;
-	printf("THE xinc's were switched \n");
-	printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
+	//printf("THE xinc's were switched \n");
+	//printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
 	//set x1 to x2
       }
       
@@ -181,10 +181,11 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
       
       if(y_pos == my){
 	x1_inc = x2_inc;
-	printf("THE xinc's were switched \n");
-	printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
+	//printf("THE xinc's were switched \n");
+	//printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
 	//set x1 to x2
       }
+
     }
     
     
@@ -239,8 +240,6 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
  
   int point;
   double *normal;
-
-  int count = 0;
   
   for (point=0; point < polygons->lastcol-2; point+=3) {
 
@@ -253,10 +252,8 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
       c.blue = ((MAX_COLOR * (point*23)) % 256);
       
       //printf("polygon %d\n", point);
-      scanline_convert( polygons, point, s, zb, c, count); 
+      scanline_convert( polygons, point, s, zb, c); 
 
-      count++;
-      
       c.red = 0; 
       c.green = 0; 
       c.blue = 0; 
@@ -729,7 +726,7 @@ void draw_line(int x0, int y0, double z0,
 
   //printf("LINE INFO: x0: %d, x1: %d \n", x0, x1);
   
-  /*
+  
   //setting m to a vaue;
   float m;
   //mode is 0 if we use m as y, and 1 if we use m as x, and 2 if we have a line that only chnages in z
@@ -749,7 +746,7 @@ void draw_line(int x0, int y0, double z0,
     m = ((float)(z1-z0))/((float)(y1-y0));
   }
   //
-  */
+  
 
 
   x = x0;
@@ -825,7 +822,7 @@ void draw_line(int x0, int y0, double z0,
     }
 
 
-    /*
+    
     //altering z
     if(mode == 0){
       z = z0 + m*(y-y0);
@@ -843,7 +840,7 @@ void draw_line(int x0, int y0, double z0,
       }
     }
     //
-    */
+    
 
     
     loop_start++;

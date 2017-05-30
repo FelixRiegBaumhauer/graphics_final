@@ -4,7 +4,7 @@
 #include "matrix.h"
 #include "ml6.h"
 
-void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb, color c, int count);
+void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb, color c);
 
 //polygon organization
 void add_polygons( struct matrix * points, 

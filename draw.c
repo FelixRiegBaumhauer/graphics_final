@@ -108,9 +108,9 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   double x1_inc;//this is the first branch of x1
   double x2_inc;// 2nd branch of x0
 
-  double mz0;
-  double mz1;
-  double mz2;
+  double z0_inc;
+  double z1_inc;
+  double z2_inc;
 
   int modemz0, modemz1, modemz2;
   
@@ -121,6 +121,14 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   else{
     x0_inc = ((float)(tx-bx))/((float)(ty-by));
   }
+
+  //z0
+  if (ty-by == 0){
+    z0_inc = tz-bz;
+  }
+  else{
+    z0_inc = ((float)(tz-bz))/((float)(ty-by));
+  }
   
   //x1
   if (my-by == 0){
@@ -128,6 +136,14 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   }
   else{
     x1_inc = ((float)(mx-bx))/((float)(my-by));
+  }
+
+  //z1
+  if (my-by == 0){
+    z1_inc = mz-bz;
+  }
+  else{
+    z1_inc = ((float)(mz-bz))/((float)(my-by));
   }
   
   //x2
@@ -138,25 +154,29 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
     x2_inc = ((float)(tx-mx))/((float)(ty-my));
   }
   
+  //z2
+  if (ty-my == 0){
+    z2_inc = mz-bz;
+  }
+  else{
+    z2_inc = ((float)(tz-mz))/((float)(ty-my));
+  }
+  
   //printf("inc0: %f, inc1: %f, inc2: %f\n", x0_inc, x1_inc, x2_inc);
   
   double x_pos0 = bx;
   double x_pos1 = bx;
+
+  double z_pos0 = bz;
+  double z_pos1 = bz;
   
   int y_inc = 1;
   int y_pos = by;
 
-  float some_pos;
-  some_pos = ((mx+bx+tx)/3) - ((my+by+ty)/3);
+  //float some_pos;
+  //some_pos = (tx + mx)/2 - 250 ;
       
   for(y_pos=by; y_pos <= ty; y_pos+=y_inc){
-    /*
-      if(y_pos == my+1){
-      x1_inc = x2_inc;
-      printf("THE xinc's were switched \n");
-      printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
-      //set x1 to x2
-      }*/
     
     if(my != by){
       if(y_pos == my){
@@ -164,21 +184,35 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
 	//printf("THE xinc's were switched \n");
 	//printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
 	//set x1 to x2
+
+	//switch the zs
+	z1_inc = z2_inc;
       }
       
-      draw_line( x_pos0, y_pos, some_pos, x_pos1, y_pos, some_pos, s, zb, c);
+      draw_line( x_pos0, y_pos, z_pos0, x_pos1, y_pos, z_pos1, s, zb, c);
       //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
       
       //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
+      //increment x's
       x_pos0 += x0_inc;
       x_pos1 += x1_inc;
+
+      //increment z's
+      z_pos0 += z0_inc;
+      z_pos1 += z1_inc;
     }
     else{
+      
       //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
+      //increment x's
       x_pos0 += x0_inc;
       x_pos1 += x1_inc;
+
+      //increment z's
+      z_pos0 += z0_inc;
+      z_pos1 += z1_inc;
       
-      draw_line( x_pos0, y_pos, some_pos, x_pos1, y_pos, some_pos, s, zb, c);
+      draw_line( x_pos0, y_pos, z_pos0, x_pos1, y_pos, z_pos1, s, zb, c);
       //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
       
       if(y_pos == my){
@@ -186,7 +220,11 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
 	//printf("THE xinc's were switched \n");
 	//printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
 	//set x1 to x2
+
+	//switch the zs
+	z1_inc = z2_inc;
       }
+      
 
     }
     
@@ -262,7 +300,7 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
 
 
       //THESE DRAW LINES ARE TO BE REPLACED
-      
+      /*
       draw_line( polygons->m[0][point],
       		 polygons->m[1][point],
       		 polygons->m[2][point],
@@ -284,7 +322,7 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
       		 polygons->m[1][point+2],
       		 polygons->m[2][point+2],
       		 s, zb, c);
-      
+      */
        }
   }
 }

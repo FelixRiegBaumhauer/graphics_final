@@ -116,7 +116,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   
   //x0
   if (ty-by == 0){
-    x0_inc = 0;
+    x0_inc = tx-bx;
   }
   else{
     x0_inc = ((float)(tx-bx))/((float)(ty-by));
@@ -148,7 +148,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   
   //x2
   if (ty-my == 0){
-    x2_inc = 0;
+    x2_inc = tx-mx;
   }
   else{
     x2_inc = ((float)(tx-mx))/((float)(ty-my));

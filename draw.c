@@ -188,8 +188,26 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
 	//switch the zs
 	z1_inc = z2_inc;
       }
+
+      //experiment
+      int x0hold, x1hold;
+      if(x_pos0 - (int)x_pos0 > .5){
+	x0hold = (int)x_pos0 + 1;
+      }
+      else{
+	x0hold = x_pos0;
+      }
+
+      if(x_pos1 - (int)x_pos1 > .5){
+	x1hold = (int)x_pos1 + 1;
+      }
+      else{
+	x1hold = x_pos1;
+      }
+      //end experiment
       
-      draw_line( x_pos0, y_pos, z_pos0, x_pos1, y_pos, z_pos1, s, zb, c);
+      
+      draw_line( x0hold, y_pos, z_pos0, x1hold, y_pos, z_pos1, s, zb, c);
       //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
       
       //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
@@ -202,7 +220,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
       z_pos1 += z1_inc;
     }
     else{
-      
+      /*
       //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
       //increment x's
       x_pos0 += x0_inc;
@@ -211,9 +229,38 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
       //increment z's
       z_pos0 += z0_inc;
       z_pos1 += z1_inc;
+      */
+
+      //experiment
+      int x0hold, x1hold;
+      if(x_pos0 - (int)x_pos0 > .5){
+	x0hold = (int)x_pos0 + 1;
+      }
+      else{
+	x0hold = x_pos0;
+      }
+
+      if(x_pos1 - (int)x_pos1 > .5){
+	x1hold = (int)x_pos1 + 1;
+      }
+      else{
+	x1hold = x_pos1;
+      }
+      //end experiment
       
-      draw_line( x_pos0, y_pos, z_pos0, x_pos1, y_pos, z_pos1, s, zb, c);
+      draw_line( x0hold, y_pos, z_pos0, x1hold, y_pos, z_pos1, s, zb, c);
       //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
+
+      //
+      //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
+      //increment x's
+      x_pos0 += x0_inc;
+      x_pos1 += x1_inc;
+
+      //increment z's
+      z_pos0 += z0_inc;
+      z_pos1 += z1_inc;
+      //
       
       if(y_pos == my){
 	x1_inc = x2_inc;

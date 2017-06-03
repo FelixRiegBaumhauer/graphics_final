@@ -143,7 +143,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
     z1_inc = mz-bz;
   }
   else{
-    z1_inc = ((float)(mz-bz))/((float)(my-by));
+    z1_inc = ((double)(mz-bz))/((double)(my-by));
   }
   
   //x2
@@ -159,7 +159,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
     z2_inc = mz-bz;
   }
   else{
-    z2_inc = ((float)(tz-mz))/((float)(ty-my));
+    z2_inc = ((double)(tz-mz))/((double)(ty-my));
   }
   
   //printf("inc0: %f, inc1: %f, inc2: %f\n", x0_inc, x1_inc, x2_inc);
@@ -179,6 +179,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   for(y_pos=by; y_pos <= ty; y_pos+=y_inc){
     
     if(my != by){
+
       if(y_pos == my){
 	x1_inc = x2_inc;
 	//printf("THE xinc's were switched \n");
@@ -188,6 +189,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
 	//switch the zs
 	z1_inc = z2_inc;
       }
+      
 
       //experiment
       int x0hold, x1hold;
@@ -205,6 +207,19 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
 	x1hold = x_pos1;
       }
       //end experiment
+
+
+      //RIDUCOUS TEST
+      /*
+      if(x0hold < x1hold){
+	x0hold += 1;
+	x1hold -= 1;
+      }
+      else{
+	x0hold -= 1;
+	x1hold += 1;
+      }
+      */
       
       
       draw_line( x0hold, y_pos, z_pos0, x1hold, y_pos, z_pos1, s, zb, c);
@@ -218,6 +233,8 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
       //increment z's
       z_pos0 += z0_inc;
       z_pos1 += z1_inc;
+      
+      
     }
     else{
       /*
@@ -231,6 +248,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
       z_pos1 += z1_inc;
       */
 
+      
       //experiment
       int x0hold, x1hold;
       if(x_pos0 - (int)x_pos0 > .5){
@@ -247,6 +265,20 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
 	x1hold = x_pos1;
       }
       //end experiment
+
+
+      //RIDUCOUS TEST
+      /*
+      if(x0hold < x1hold){
+	x0hold += 1;
+	x1hold -= 1;
+      }
+      else{
+	x0hold -= 1;
+	x1hold += 1;
+      }
+      */
+      
       
       draw_line( x0hold, y_pos, z_pos0, x1hold, y_pos, z_pos1, s, zb, c);
       //printf("Drew Line: x1: %f, y1: %d, x2: %f, y2: %d\n", x_pos0, y_pos, x_pos1, y_pos);
@@ -278,7 +310,29 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
     
     
   }
-
+  /*
+  draw_line( polygons->m[0][point],
+	     polygons->m[1][point],
+	     polygons->m[2][point],
+	     polygons->m[0][point+1],
+	     polygons->m[1][point+1],
+	     polygons->m[2][point+1],
+	     s, zb, c);
+  draw_line( polygons->m[0][point+2],
+	     polygons->m[1][point+2],
+	     polygons->m[2][point+2],
+	     polygons->m[0][point+1],
+	     polygons->m[1][point+1],
+	     polygons->m[2][point+1],
+	     s, zb, c);
+  draw_line( polygons->m[0][point],
+	     polygons->m[1][point],
+	     polygons->m[2][point],
+	     polygons->m[0][point+2],
+	     polygons->m[1][point+2],
+	     polygons->m[2][point+2],
+	     s, zb, c);
+  */
   
 }
 

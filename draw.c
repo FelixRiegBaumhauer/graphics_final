@@ -10,10 +10,12 @@
 
 void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb, color c) {
 
-  
-  //THIS IS WHERE MY WORK STARTS FROM
       
-  //find B, T, M
+  /*
+    the following lines are used to identify the top, bottom, and middle vertex
+    of each triangle, 
+   */
+  
   int bx, tx, mx;
   int by, ty, my;
   int bz, tz, mz;
@@ -100,9 +102,13 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
       }
     }
   }
+
+  //Now we find the x and z increments
   
+  /*
   printf("\nTHE POINTS: \ntop: (%d, %d), mid: (%d, %d), bot: (%d, %d)\n",
 	 tx,ty,mx,my,bx,by);
+  */
   
   double x0_inc;
   double x1_inc;//this is the first branch of x1
@@ -111,8 +117,6 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   double z0_inc;
   double z1_inc;
   double z2_inc;
-
-  int modemz0, modemz1, modemz2;
   
   //x0
   if (ty-by == 0){
@@ -161,6 +165,8 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   else{
     z2_inc = ((double)(tz-mz))/((double)(ty-my));
   }
+
+  //Now we act on teh x and z values and increments
   
   //printf("inc0: %f, inc1: %f, inc2: %f\n", x0_inc, x1_inc, x2_inc);
   
@@ -173,8 +179,7 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
   int y_inc = 1;
   int y_pos = by;
 
-  //float some_pos;
-  //some_pos = (tx + mx)/2 - 250 ;
+  
       
   for(y_pos=by; y_pos <= ty; y_pos+=y_inc){
     
@@ -182,33 +187,15 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
 
       if(y_pos == my){
 	x1_inc = x2_inc;
-	//printf("THE xinc's were switched \n");
-	//printf("x1inc: %f, x2inc: %f \n", x1_inc, x2_inc);
-	//set x1 to x2
-
-	//switch the zs
 	z1_inc = z2_inc;
       }
+
       
-
-      //experiment
       int x0hold, x1hold;
-      if(x_pos0 - (int)x_pos0 > .5){
-	x0hold = (int)x_pos0 + 1;
-      }
-      else{
-	x0hold = x_pos0;
-      }
+      x0hold = x_pos0;
+      x1hold = x_pos1;
 
-      if(x_pos1 - (int)x_pos1 > .5){
-	x1hold = (int)x_pos1 + 1;
-      }
-      else{
-	x1hold = x_pos1;
-      }
-      //end experiment
-
-
+      
       //RIDUCOUS TEST
       /*
       if(x0hold < x1hold){
@@ -237,35 +224,10 @@ void scanline_convert( struct matrix *polygons, int point, screen s, zbuffer zb,
       
     }
     else{
-      /*
-      //printf("x_pos0: %f, x_pos1: %f, ypos: %d \n", x_pos0, x_pos1, y_pos);
-      //increment x's
-      x_pos0 += x0_inc;
-      x_pos1 += x1_inc;
 
-      //increment z's
-      z_pos0 += z0_inc;
-      z_pos1 += z1_inc;
-      */
-
-      
-      //experiment
       int x0hold, x1hold;
-      if(x_pos0 - (int)x_pos0 > .5){
-	x0hold = (int)x_pos0 + 1;
-      }
-      else{
-	x0hold = x_pos0;
-      }
-
-      if(x_pos1 - (int)x_pos1 > .5){
-	x1hold = (int)x_pos1 + 1;
-      }
-      else{
-	x1hold = x_pos1;
-      }
-      //end experiment
-
+      x0hold = x_pos0;
+      x1hold = x_pos1;
 
       //RIDUCOUS TEST
       /*

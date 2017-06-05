@@ -347,6 +347,11 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
   for (point=0; point < polygons->lastcol-2; point+=3) {
 
     normal = calculate_normal(polygons, point);
+
+    //here is where the flat shadding occurs
+
+    
+
     
     if ( normal[2] > 0 ) {
 

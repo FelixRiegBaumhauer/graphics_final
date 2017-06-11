@@ -348,16 +348,142 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
 
     normal = calculate_normal(polygons, point);
 
-    //here is where the flat shadding occurs
-
-    
 
     
     if ( normal[2] > 0 ) {
 
-      c.red = ((MAX_COLOR * (point*53)) % 256);
-      c.green = ((MAX_COLOR * (point*43)) % 256);
-      c.blue = ((MAX_COLOR * (point*23)) % 256);
+      //here is where the flat shadding occurs
+      
+      /////////////////////////////
+      //***** AMBIENT LIGHT *****//
+      /////////////////////////////
+      
+      //WE FIRST PRESET OUR VALUES
+      //first the constant of ambient light for rbg
+      float ka = .25;
+      //the values of ambient light follow
+      int AR = 255;
+      int AB = 255;
+      int AG = 255;
+      
+      //I ambient light is I_amb
+      int I_ambR = AR*ka;
+      int I_ambB = AB*ka;
+      int I_ambG = AG*ka;
+      
+      /////////////////////////////
+      //***** DIFFUSE LIGHT *****//
+      /////////////////////////////
+      
+      //first we preset the values
+      //the constants of diffuse reflection
+      float kd = .75;
+      //the values of the light from the light source
+      int LR = 255;
+      int LB = 125;
+      int LG = 0;
+      //the location of the light source
+      double L[3];
+      //this light source is at 500,500,500
+      L[0] = 100.0;
+      L[1] = 100.0;
+      L[2] = 300.0;
+
+      
+      //normalize L
+      float v_mid = sqrt((L[0]*L[0]) + (L[1]*L[1]) + (L[2]*L[2]));
+      
+      L[0] = L[0]/v_mid;
+      L[1] = L[1]/v_mid;
+      L[2] = L[2]/v_mid;
+
+      
+      //normalize normal
+      float n_mid = sqrt((normal[0]*normal[0]) + (normal[1]*normal[1]) + (normal[2]*normal[2]));
+
+      normal[0] = normal[0]/n_mid;
+      normal[1] = normal[1]/n_mid;
+      normal[2] = normal[2]/n_mid;
+
+      double NLdot = (normal[0]*L[0] + normal[1]*L[1] + normal[2]*L[2]);
+      
+      //calculate the respective I values
+      int I_diffR = LR*kd * NLdot;
+      int I_diffB = LB*kd * NLdot;
+      int I_diffG = LG*kd * NLdot;
+
+      //End diff
+
+      
+      /////////////////////////////////
+      //***** SPECULAR LIGHTING *****//
+      /////////////////////////////////
+      
+      //initialize the remaining values
+      int ks = .1;
+      int p = 1; //p is the fade value
+      int V[3];
+      V[0] = 0;
+      V[1] = 0;
+      V[2] = 1;
+
+      //Q is the dot product of (2N(N*L)-L) * V
+      double Q;
+      normal[0] = normal[0] * (2 * NLdot);
+      normal[1] = normal[1] * (2 * NLdot);
+      normal[2] = normal[2] * (2 * NLdot);
+
+      normal[0] - L[0];
+      normal[1] - L[1];
+      normal[2] - L[2];
+      
+      Q = normal[0]*V[0] + normal[1]*V[1] + normal[2]*V[2];
+      
+      int I_specR = pow( ((LR*ks) * Q), p);
+      int I_specB = pow( ((LB*ks) * Q), p);
+      int I_specG = pow( ((LG*ks) * Q), p);
+
+      /*
+      I_specR = 0;
+      I_specG = 0;
+      I_specB = 0;
+      */
+
+      //end spec
+      
+      c.red = I_ambR + I_diffR + I_specR;
+      c.green = I_ambG + I_diffG + I_specG;
+      c.blue = I_ambB + I_diffB + I_specB;
+
+
+      //readjusting the light
+      //for red
+      if(c.red > 255){
+	c.red = 255;
+      }
+      if(c.red < 0){
+	c.red = 0;
+      }
+      //for blue
+      if(c.blue > 255){
+	c.blue = 255;
+      }
+      if(c.blue < 0){
+	c.blue = 0;
+      }
+      //for green
+      if(c.green > 255){
+	c.green = 255;
+      }
+      if(c.green < 0){
+	c.green = 0;
+      }
+
+      /////////////////////////////////////////////////////////////////////////
+      
+      //c.red = ((MAX_COLOR * (point*53)) % 256);
+      //c.green = ((MAX_COLOR * (point*43)) % 256);
+      //c.blue = ((MAX_COLOR * (point*23)) % 256);
       
       //printf("polygon %d\n", point);
       scanline_convert( polygons, point, s, zb, c); 

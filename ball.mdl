@@ -1,0 +1,6 @@
+push
+sphere 250 250 0 200
+move -250 -250 0
+pop
+display
+save ball.png

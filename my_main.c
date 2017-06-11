@@ -255,7 +255,7 @@ void my_main() {
   screen t;
   zbuffer zb;
   color g;
-  double step = 0.1;
+  double step = 0.01;
   double theta;
   double knob_value, xval, yval, zval;
   

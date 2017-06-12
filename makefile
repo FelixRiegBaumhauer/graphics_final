@@ -3,6 +3,8 @@ CFLAGS= -g
 LDFLAGS= -lm
 CC= gcc
 
+run: parser
+	./mdl rot_robot.mdl
 all: parser
 
 parser: lex.yy.c y.tab.c y.tab.h $(OBJECTS)

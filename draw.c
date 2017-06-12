@@ -363,8 +363,8 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
       float ka = .25;
       //the values of ambient light follow
       int AR = 255;
-      int AB = 255;
-      int AG = 255;
+      int AB = 55;
+      int AG = 155;
       
       //I ambient light is I_amb
       int I_ambR = AR*ka;
@@ -380,14 +380,14 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
       float kd = .5;
       //the values of the light from the light source
       int LR = 255;
-      int LB = 125;
-      int LG = 0;
+      int LB = 225;
+      int LG = 255;
       //the location of the light source
       double L[3];
       //this light source is at 500,500,500
       L[0] = 1000.0;
-      L[1] = 1000.0;
-      L[2] = 3000.0;
+      L[1] = 3000.0;
+      L[2] = 2000.0;
 
       
       //normalize L

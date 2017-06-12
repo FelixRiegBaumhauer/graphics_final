@@ -377,7 +377,7 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
       
       //first we preset the values
       //the constants of diffuse reflection
-      float kd = .75;
+      float kd = .5;
       //the values of the light from the light source
       int LR = 255;
       int LB = 125;
@@ -385,9 +385,9 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
       //the location of the light source
       double L[3];
       //this light source is at 500,500,500
-      L[0] = 100.0;
-      L[1] = 100.0;
-      L[2] = 300.0;
+      L[0] = 1000.0;
+      L[1] = 1000.0;
+      L[2] = 3000.0;
 
       
       //normalize L
@@ -420,8 +420,8 @@ void draw_polygons( struct matrix *polygons, screen s, zbuffer zb, color c ) {
       /////////////////////////////////
       
       //initialize the remaining values
-      int ks = .1;
-      int p = 1; //p is the fade value
+      float ks = .15;
+      float p = 1; //p is the fade value
       int V[3];
       V[0] = 0;
       V[1] = 0;
